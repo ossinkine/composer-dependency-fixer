@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+$autoload = realpath(__DIR__ . '/../../autoload.php');
+if (false === $autoload) {
+    $autoload = __DIR__ . '/vendor/autoload.php';
+}
+require_once $autoload;
+
+use Ossinkine\ComposerDependencyFixer\Console\Application;
+
+$application = new Application();
+$application->run();
