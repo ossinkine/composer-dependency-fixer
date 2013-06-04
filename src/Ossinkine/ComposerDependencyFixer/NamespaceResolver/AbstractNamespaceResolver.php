@@ -18,12 +18,12 @@ abstract class AbstractNamespaceResolver implements NamespaceResolverInterface
     {
         $result = null;
         foreach ($this->getMap() as $namespace => $package) {
-            if (strpos($className, $namespace . '\\') === 0) {
+            $pattern = sprintf('/^%s(\\\\|$)/', preg_quote($namespace));
+            if (preg_match($pattern, $className)) {
                 $result = $package;
                 break;
             }
         }
-
         return $result;
     }
 }
