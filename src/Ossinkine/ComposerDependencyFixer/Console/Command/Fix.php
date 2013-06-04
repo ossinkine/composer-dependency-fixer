@@ -74,15 +74,27 @@ class Fix extends Command
 
         $composerConfigChanged = false;
         foreach ($packages as $package => $count) {
-            if (!array_key_exists($package, $composerConfig['require'])
-                && !array_key_exists($package, $composerConfig['require-dev'])
-                && !array_key_exists($package, $composerConfig['suggest'])
+            if ((!array_key_exists('require', $composerConfig)
+                    || !array_key_exists($package, $composerConfig['require']))
+                && (!array_key_exists('require-dev', $composerConfig)
+                    || !array_key_exists($package, $composerConfig['require-dev']))
             ) {
                 if ($count === $files) {
+                    if (!array_key_exists('require', $composerConfig)) {
+                        $composerConfig['require'] = array();
+                    }
                     $composerConfig['require'][$package] = '*';
                 } else {
+                    if (!array_key_exists('require-dev', $composerConfig)) {
+                        $composerConfig['require-dev'] = array();
+                    }
                     $composerConfig['require-dev'][$package] = '*';
-                    $composerConfig['suggest'][$package] = $package;
+                    if (!array_key_exists('suggest', $composerConfig)) {
+                        $composerConfig['suggest'] = array();
+                    }
+                    if (!array_key_exists($package, $composerConfig['suggest'])) {
+                        $composerConfig['suggest'][$package] = $package;
+                    }
                 }
                 $composerConfigChanged = true;
             }
